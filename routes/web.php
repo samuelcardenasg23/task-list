@@ -52,21 +52,9 @@ Route::post('/tasks', function (Request $request) {
     $task->save();
 
     // Redirect to the recent added task
-    return redirect()->route('tasks.show', ['id'=> $task->id]);
+    return redirect()->route('tasks.show', ['id'=> $task->id])
+        ->with('success','Task created successfully!');
 })->name('tasks.store');
-
-// Route::get('/hello', function () {
-//     return 'Hello';
-// })->name('hello');
-
-// // REDIRECT
-// Route::get('/hallo', function () {
-//     return redirect()->route('hello');
-// });
-
-// Route::get('/greet/{name}', function ($name) {
-//     return 'Hello ' . $name . '!';
-// });
 
 Route::fallback(function () {
     return 'Still got somewhere!';
