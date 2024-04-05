@@ -34,6 +34,12 @@ Route::get('/tasks/{id}', function ($id) {
     ]);
 })->name('tasks.show');
 
+Route::get('/tasks/{id}/edit', function ($id) {
+    return view('edit', [
+        'task' => Task::findOrFail($id)
+    ]);
+})->name('tasks.edit');
+
 Route::post('/tasks', function (Request $request) {
     // Validation
     $data = $request->validate([
@@ -55,6 +61,28 @@ Route::post('/tasks', function (Request $request) {
     return redirect()->route('tasks.show', ['id'=> $task->id])
         ->with('success','Task created successfully!');
 })->name('tasks.store');
+
+Route::put('/tasks/{id}', function ($id, Request $request) {
+    // Validation
+    $data = $request->validate([
+        'title' => 'required|max:255',
+        'description'=> 'required',
+        'long_description'=> 'required',
+    ]);
+
+    // Create Model
+    $task = Task::findOrFail($id);
+    $task->title = $data['title'];
+    $task->description = $data['description'];
+    $task->long_description = $data['long_description'];
+
+    // Save changes to DB
+    $task->save();
+
+    // Redirect to the recent added task
+    return redirect()->route('tasks.show', ['id'=> $task->id])
+        ->with('success','Task updated successfully!');
+})->name('tasks.update');
 
 Route::fallback(function () {
     return 'Still got somewhere!';
